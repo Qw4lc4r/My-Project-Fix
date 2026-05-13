@@ -16,16 +16,14 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
-import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ApiService {
 
-    // ========== КЛАССЫ ЗАПРОСОВ (REQUESTS) ==========
+    // ========== КЛАССЫ ЗАПРОСОВ ==========
 
     class RegisterRequest {
         public String name;
@@ -97,7 +95,7 @@ public interface ApiService {
         }
     }
 
-    // ========== КЛАССЫ ОТВЕТОВ (RESPONSES) ==========
+    // ========== КЛАССЫ ОТВЕТОВ ==========
 
     class User {
         public int id;
@@ -124,64 +122,67 @@ public interface ApiService {
         public int progress_percent;
     }
 
-
-
     class AvatarResponse {
         public String message;
         public String avatar_url;
     }
 
     // ========== API МЕТОДЫ ==========
-// ========== АУТЕНТИФИКАЦИЯ (Адреса Supabase Auth) ==========
-    // Для регистрации используем стандартный путь Supabase
-    @POST("auth/v1/signup")
+
+    // Аутентификация
+    @POST("auth/register")
     Call<SimpleMessage> register(@Body RegisterRequest body);
 
-    @POST("auth/v1/token?grant_type=password")
+    @POST("auth/login")
     Call<LoginResponse> login(@Body LoginRequest body);
 
-    @POST("auth/v1/verify")
+    @POST("auth/verify-email")
     Call<LoginResponse> verifyEmail(@Body VerifyEmailRequest body);
 
-    @POST("auth/v1/resend")
+    @POST("auth/resend-code")
     Call<SimpleMessage> resendCode(@Body ResendCodeRequest body);
 
-    // ========== КУРС (Таблицы в БД) ==========
-
-    // Получаем все главы
-    @GET("rest/v1/chapters?select=*")
+    // Курс
+    @GET("course/chapters")
     Call<List<Chapter>> getChapters();
 
-    // Получаем подглавы конкретной главы (используем Query вместо Body)
-    @GET("rest/v1/subchapters?select=*")
-    Call<List<Subchapter>> getSubchapters(@Query("chapter_id") int chapterId);
+    @GET("course/chapters/{chapterId}/subchapters")
+    Call<List<Subchapter>> getSubchapters(@Path("chapterId") int chapterId);
 
-    // Получаем материалы (теорию и практику)
-    // Здесь используем фильтрацию по subchapter_id через URL
-    @GET("rest/v1/materials?select=*")
-    Call<MaterialsResponse> getMaterials(@Query("subchapter_id") int subchapterId);
+    @GET("course/subchapters/{subchapterId}/materials")
+    Call<MaterialsResponse> getMaterials(@Path("subchapterId") int subchapterId);
 
-    // ========== ПРОГРЕСС И ЗАДАЧИ ==========
-
-    @GET("rest/v1/user_stats?select=*&limit=1")
+    // Прогресс
+    @GET("progress/stats")
     Call<UserStats> getUserStats();
 
-    @POST("rest/v1/user_progress")
+    @POST("progress/complete")
     Call<SimpleMessage> markComplete(@Body CompleteRequest body);
 
-    @GET("rest/v1/tasks?select=*,task_options(*)")
-    Call<List<Task>> getTasks(@Query("subchapter_id") int subchapterId);
+    @GET("progress/chapter/{chapterId}")
+    Call<ChapterProgressResponse> getChapterProgress(@Path("chapterId") int chapterId);
 
-    // ========== ПРОФИЛЬ ==========
+    // Задачи
+    @GET("tasks/subchapter/{subchapterId}")
+    Call<List<Task>> getTasks(@Path("subchapterId") int subchapterId);
 
-    @GET("rest/v1/profiles?select=*&limit=1")
+    @POST("tasks/check")
+    Call<TaskResult> checkAnswer(@Body CheckAnswerRequest body);
+
+    @GET("tasks/results/{subchapterId}")
+    Call<UserTaskResults> getTaskResults(@Path("subchapterId") int subchapterId);
+
+    // Профиль
+    @GET("user/profile")
     Call<UserProfile> getUserProfile();
 
-    @PATCH("rest/v1/profiles")
+    @PUT("user/profile")
     Call<SimpleMessage> updateProfile(@Body UpdateProfileRequest body);
 
-    @Multipart
-    @POST("storage/v1/object/avatars/avatar_{userId}.jpg")
-    Call<AvatarResponse> uploadAvatar(@Path("userId") String userId, @Part MultipartBody.Part avatar);
+    @POST("user/change-password")
+    Call<SimpleMessage> changePassword(@Body ChangePasswordRequest body);
 
+    @Multipart
+    @POST("user/upload-avatar")
+    Call<AvatarResponse> uploadAvatar(@Part MultipartBody.Part avatar);
 }

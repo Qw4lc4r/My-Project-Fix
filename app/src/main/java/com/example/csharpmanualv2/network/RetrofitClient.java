@@ -13,10 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    // ЗАМЕНИ на свои данные из Supabase (Settings -> API)
-    public static final String BASE_URL = "https://vdmksxsiigqqfpwmuzct.supabase.co/";
-    public static final String SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbWtzeHNpaWdxcWZwd211emN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2ODk2NDUsImV4cCI6MjA5NDI2NTY0NX0.JO5p1oHZFysvICqH_kyZRvRR3-_A4T8thF1-rTa2Fr4";
-
+    public static final String BASE_URL = "http://188.235.162.32:28015/";
     private static Retrofit retrofit = null;
     private static Context appContext;
 
@@ -26,29 +23,33 @@ public class RetrofitClient {
 
     public static Retrofit getClient() {
         if (retrofit == null) {
+            // Логирование HTTP запросов
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(message -> {
                 Log.d("RETROFIT", message);
             });
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
+            // Добавление токена в заголовки
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(chain -> {
                         Request original = chain.request();
+
                         UserPrefs userPrefs = new UserPrefs(appContext);
                         String token = userPrefs.getToken();
 
-                        Request.Builder requestBuilder = original.newBuilder()
-                                .header("apikey", SUPABASE_KEY)
-                                .header("Content-Type", "application/json");
-
-                        // Если есть токен пользователя (JWT), используем его, иначе anon key
                         if (token != null && !token.isEmpty()) {
-                            requestBuilder.header("Authorization", "Bearer " + token);
+                            Log.d("RETROFIT", "Добавляю токен в заголовок: " + token.substring(0, Math.min(20, token.length())) + "...");
+
+                            Request request = original.newBuilder()
+                                    .header("Authorization", "Bearer " + token)
+                                    .method(original.method(), original.body())
+                                    .build();
+                            return chain.proceed(request);
                         } else {
-                            requestBuilder.header("Authorization", "Bearer " + SUPABASE_KEY);
+                            Log.w("RETROFIT", "⚠️ Токен отсутствует!");
                         }
 
-                        return chain.proceed(requestBuilder.build());
+                        return chain.proceed(original);
                     })
                     .addInterceptor(loggingInterceptor)
                     .build();

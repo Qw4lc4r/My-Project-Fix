@@ -53,7 +53,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersAdapter.Chapte
         holder.tvTitle.setText(chapter.title);
         holder.tvSubtitle.setText(chapter.subtitle);
 
-        // Загружаем прогресс (в Supabase фильтр передается параметром)
+        // Загружаем прогресс по главе
         RetrofitClient.getApi().getChapterProgress(chapter.id).enqueue(new Callback<ApiService.ChapterProgressResponse>() {
             @Override
             public void onResponse(Call<ApiService.ChapterProgressResponse> call, Response<ApiService.ChapterProgressResponse> response) {

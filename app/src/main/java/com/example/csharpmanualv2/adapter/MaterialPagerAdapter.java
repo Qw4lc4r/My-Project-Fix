@@ -10,8 +10,6 @@ import com.example.csharpmanualv2.PracticeFragment;
 import com.example.csharpmanualv2.TheoryFragment;
 import com.example.csharpmanualv2.model.Material;
 
-import java.util.List;
-
 public class MaterialPagerAdapter extends FragmentStateAdapter {
 
     private Material theoryMaterial;
@@ -20,23 +18,13 @@ public class MaterialPagerAdapter extends FragmentStateAdapter {
     private String subchapterTitle;
 
     public MaterialPagerAdapter(@NonNull FragmentActivity fragmentActivity,
-                                List<Material> materials,
+                                Material theory, Material practice,
                                 int subchapterId, String subchapterTitle) {
         super(fragmentActivity);
+        this.theoryMaterial = theory;
+        this.practiceMaterial = practice;
         this.subchapterId = subchapterId;
         this.subchapterTitle = subchapterTitle;
-
-        // Распределяем материалы из списка по типу
-        if (materials != null) {
-            for (Material m : materials) {
-                if ("theory".equalsIgnoreCase(m.type)) {
-                    this.theoryMaterial = m;
-                } else if ("practice".equalsIgnoreCase(m.type)) {
-                    this.practiceMaterial = m;
-                }
-            }
-        }
-
     }
 
     @NonNull

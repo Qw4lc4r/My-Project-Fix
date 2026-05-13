@@ -75,8 +75,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     ApiService.LoginResponse loginResponse = response.body();
 
-
-
                     // Сохраняем данные пользователя
                     UserPrefs prefs = new UserPrefs(LoginActivity.this);
                     prefs.saveUser(
