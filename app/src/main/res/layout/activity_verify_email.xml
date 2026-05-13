@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="#F5F5F5">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@android:drawable/ic_dialog_email"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Подтверждение Email"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvEmailInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Код отправлен на example@mail.com"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:layout_marginBottom="32dp"
+        android:textAlignment="center" />
+
+    <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/tilCode"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Код подтверждения"
+    android:textColorHint="#999999"
+    app:boxBackgroundColor="#FFFFFF"
+    app:boxStrokeColor="#1E88E5"
+    app:hintTextColor="#1E88E5">
+
+    <com.google.android.material.textfield.TextInputEditText
+    android:id="@+id/etCode"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="number"
+    android:maxLength="6"
+    android:textColor="#000000"
+    android:textColorHint="#999999"
+    android:textSize="16sp"
+    android:textAlignment="center"
+    android:textStyle="bold" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<Button
+android:id="@+id/btnVerify"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="Подтвердить"
+android:textAllCaps="false"
+android:backgroundTint="#1E88E5"
+android:textColor="#FFFFFF"
+android:layout_marginTop="16dp" />
+
+<TextView
+android:id="@+id/tvResendCode"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Отправить код повторно"
+android:textSize="14sp"
+android:textColor="#1E88E5"
+android:layout_marginTop="16dp"
+android:clickable="true"
+android:focusable="true" />
+
+    </LinearLayout>
